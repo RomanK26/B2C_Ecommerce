@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
-from yaml import serialize
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.account import serializers
 from api.account.models import Account
@@ -27,8 +27,14 @@ class LoginView(APIView):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.user
-        login(request, user)
-        return Response(
-            {"message": "Login successful.", "user_id": user.id},
-            status=status.HTTP_200_OK,
-        )
+        if user is not None:
+            refresh = RefreshToken.for_user(user)
+            return Response(
+                {
+                    "message": "Login successful.",
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh),
+                    "user_id": user.id,
+                },
+                status=status.HTTP_200_OK,
+            )
