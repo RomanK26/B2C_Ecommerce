@@ -3,11 +3,12 @@ from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
 
 
-
 # Create your views here.
 class Account(AbstractUser):
     username = None
-    email = models.EmailField(unique=True)
+    email = models.EmailField(
+        unique=True, help_text="Required. Enter a valid email address."
+    )
     address = models.CharField(max_length=255, blank=True)
     profile_image = models.ImageField(
         upload_to="profile_images/", blank=True, null=True

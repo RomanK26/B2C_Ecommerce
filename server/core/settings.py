@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'phonenumber_field',
     "api",
     "api.account",
+    "api.product",
 ]
 
 MIDDLEWARE = [
@@ -75,7 +76,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.gzip.GZipMiddleware",
-    # middleware
     "corsheaders.middleware.CorsMiddleware",
 ]
 
