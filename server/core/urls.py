@@ -28,7 +28,7 @@ urlpatterns = [
         name="swagger-ui",
     ),
     path("api/auth/",include("api.account.urls")),
-    # path(),
+    path("api/",include("api.product.urls")),
     # path(),
     # path(),
     # path(),

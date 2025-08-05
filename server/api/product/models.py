@@ -1,5 +1,3 @@
-
-from enum import unique
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
@@ -42,15 +40,22 @@ class Product(models.Model):
         related_name="products",
         help_text="Select the product category",
     )
+    in_stock = models.BooleanField(default = False)
+    created_by = models.ForeignKey(Account,on_delete=models.CASCADE,related_name="product_creator")
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
 
     def __str__(self) -> str:
         return str(self.name)
+    
+    def save(self, *args, **kwargs):
+        self.in_stock = self.quantity > 0
+        super().save(*args, **kwargs)
 
     class Meta:
         ordering = ("-created_at",)
         verbose_name_plural = "Products"
+        
 
 
 class ProductImage(models.Model):
@@ -93,14 +98,11 @@ class ProductReview(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
-    
-    
+
     def __str__(self) -> str:
         return f"{str(self.product)}_{str(self.user)}"
-    
 
     class Meta:
-        ordering = ("-created_at")
+        ordering = ("-created_at",)
         unique_together = ("product", "user")
         verbose_name_plural = "Product Reviews"
