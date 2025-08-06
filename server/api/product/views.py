@@ -22,7 +22,7 @@ class ProductListView(APIView):
 
     def get(self, request):
         try:
-            products = Product.objects.all()
+            products = Product.objects.select_related("category").all()
             if not products.exists():
                 return Response(
                     {"message": "No products found."}, status=status.HTTP_204_NO_CONTENT
@@ -68,7 +68,7 @@ class ProductDetailView(APIView):
 
     def get(self, request, pk):
         try:
-            product = Product.objects.get(pk=pk)
+            product = Product.objects.select_related('category').get(pk=pk)
             serializer = ProductSerializer(product)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
