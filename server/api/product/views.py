@@ -6,7 +6,6 @@ from rest_framework import status
 from rest_framework.views import APIView
 
 from api.product.models import Product
-from rest_framework.permissions import AllowAny
 
 from api.product.permissions import IsAdminOrReadOnly
 from api.product.serializers import ProductSerializer
@@ -93,7 +92,7 @@ class ProductDetailView(APIView):
             {"msg": f"Product {pk} successfully deleted"},
             status=status.HTTP_204_NO_CONTENT,
         )
-        
+
     def patch(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
         serializer = ProductSerializer(product, data=request.data, partial=True)
@@ -101,7 +100,7 @@ class ProductDetailView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     def put(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
         serializer = ProductSerializer(product, data=request.data, partial=True)

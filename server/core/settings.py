@@ -62,10 +62,10 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "corsheaders",
     "rest_framework",
-    'phonenumber_field',
-    "api",
+    "phonenumber_field",
     "api.account",
     "api.product",
+    "api.order",
 ]
 
 MIDDLEWARE = [
@@ -153,19 +153,19 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     # YOUR SETTINGS
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ]
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
 }
 
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=300),       # Set to your desired duration
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=4),          # How long refresh token lasts
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=300),  # Set to your desired duration
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=4),  # How long refresh token lasts
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
     "ALGORITHM": "HS256",
-    "SIGNING_KEY": SECRET_KEY,                            # Or use a custom key
+    "SIGNING_KEY": SECRET_KEY,  # Or use a custom key
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
