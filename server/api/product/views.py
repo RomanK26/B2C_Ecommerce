@@ -1,12 +1,10 @@
 from django.shortcuts import get_object_or_404
 from psycopg import DatabaseError
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.views import APIView
 
 from api.product.models import Product
-
 from api.product.permissions import IsAdminOrReadOnly
 from api.product.serializers import ProductSerializer
 
@@ -19,6 +17,7 @@ class ProductListView(APIView):
 
     permission_classes = [IsAdminOrReadOnly]
     http_method_names = ["get", "post"]
+    serializer_class = ProductSerializer
 
     def get(self, request):
         try:
@@ -27,7 +26,7 @@ class ProductListView(APIView):
                 return Response(
                     {"message": "No products found."}, status=status.HTTP_204_NO_CONTENT
                 )
-            serializer = ProductSerializer(products, many=True)
+            serializer = self.serializer_class(products, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except DatabaseError as e:
             return Response(
@@ -49,7 +48,7 @@ class ProductListView(APIView):
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
 
-            serializer = ProductSerializer(data=request.data)
+            serializer = self.serializer_class(data=request.data)
             if serializer.is_valid():
                 serializer.save(created_by=request.user)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -65,11 +64,12 @@ class ProductListView(APIView):
 class ProductDetailView(APIView):
     permission_classes = [IsAdminOrReadOnly]
     http_method_names = ["get", "put", "patch", "delete"]
+    serializer_class = ProductSerializer
 
     def get(self, request, pk):
         try:
             product = Product.objects.select_related('category').get(pk=pk)
-            serializer = ProductSerializer(product)
+            serializer = self.serializer_class(product)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         except Product.DoesNotExist:
@@ -95,7 +95,7 @@ class ProductDetailView(APIView):
 
     def patch(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
-        serializer = ProductSerializer(product, data=request.data, partial=True)
+        serializer = self.serializer_class(product, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -103,7 +103,7 @@ class ProductDetailView(APIView):
 
     def put(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
-        serializer = ProductSerializer(product, data=request.data, partial=True)
+        serializer = self.serializer_class(product, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)

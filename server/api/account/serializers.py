@@ -1,7 +1,8 @@
-from rest_framework.serializers import ModelSerializer
-from rest_framework import serializers
-from api.account.models import Account
 from django.contrib.auth import authenticate
+from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
+
+from api.account.models import Account
 
 
 class RegisterSerializer(ModelSerializer):

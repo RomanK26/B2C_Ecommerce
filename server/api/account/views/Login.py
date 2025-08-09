@@ -1,13 +1,13 @@
-from rest_framework.views import APIView
+from django.contrib.auth import login
+from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.account import serializers
 from api.account.models import Account
 from api.account.serializers import LoginSerializer
-from django.contrib.auth import login
 
 
 class LoginView(APIView):
@@ -17,6 +17,7 @@ class LoginView(APIView):
 
     permission_classes = [AllowAny]
     http_method_names = ["post"]
+    serializer_class = LoginSerializer
 
     def post(self, request):
         """
@@ -24,7 +25,7 @@ class LoginView(APIView):
         """
         print("Login request data:", request.data)
 
-        serializer = LoginSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.user
         if user is not None:
