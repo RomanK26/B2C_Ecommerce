@@ -4,9 +4,10 @@ from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.product.models import Product
+from api.product.models import Category, Product
 from api.product.permissions import IsAdminOrReadOnly
-from api.product.serializers import ProductSerializer
+from api.product.serializers import CategorySerializer, ProductSerializer
+from rest_framework.generics import ListCreateAPIView
 
 
 # Create your views here.
@@ -108,3 +109,9 @@ class ProductDetailView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CategoryView(ListCreateAPIView):
+    permission_classes = [IsAdminOrReadOnly]
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
