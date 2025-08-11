@@ -9,8 +9,12 @@ class CartItemSerializer(serializers.ModelSerializer):
         queryset=Product.objects.all(), write_only=True
     )
     product_name = serializers.StringRelatedField(source ="product",read_only=True)
+    rate = serializers.SerializerMethodField()
     class Meta:
         model = CartItem
-        fields = ["product_name", "quantity", "updated_at", "id","product"]
-        read_only_fields = ["updated_at"]
+        fields = ["product_name", "quantity", "updated_at", "id","product","rate"]
+        read_only_fields = ["updated_at","rate"]
      
+
+    def get_rate(self,obj):
+        return obj.product.price

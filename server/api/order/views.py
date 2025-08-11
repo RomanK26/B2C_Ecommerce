@@ -24,9 +24,9 @@ class OrderViewset(viewsets.ModelViewSet):
             return queryset
         return queryset.filter(user=self.request.user)
 
-    def perform_create(self, request):
+    def create(self, request, *args, **kwargs):
         try:
-            cart = Cart.objects.get(user=self.request.user)
+            cart = Cart.objects.get(user=request.user)
             if not cart.items.exists():
                 return Response(
                     {"detail": "Cart is Empty"}, status=status.HTTP_400_BAD_REQUEST
@@ -36,7 +36,8 @@ class OrderViewset(viewsets.ModelViewSet):
                 {"detail": "Cart not found"}, status=status.HTTP_404_NOT_FOUND
             )
 
-        order = Order.objects.create(user=self.request.user)
+        order = Order.objects.create(user=request.user)
+
         try:
             with transaction.atomic():
                 for item in cart.items.all():
@@ -44,12 +45,14 @@ class OrderViewset(viewsets.ModelViewSet):
                         order=order, product=item.product, quantity=item.quantity
                     )
                 cart.items.all().delete()
-            return Response(OrderSerializer(order).data, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response(
                 {"error": "Order creation failed.", "details": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+        serializer = self.get_serializer(order)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class OrderItemViewset(viewsets.ModelViewSet):
