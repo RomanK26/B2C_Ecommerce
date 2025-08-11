@@ -3,11 +3,13 @@ from rest_framework.permissions import IsAuthenticated
 
 from api.order.models import Order, OrderItem
 from api.order.serializers import OrderItemSerializer, OrderSerializer
-from api.cart.models import Cart, CartItem
+from api.cart.models import Cart
 from rest_framework.response import Response
 from django.db import transaction
 
 from rest_framework import status
+
+from rest_framework.exceptions import ValidationError
 
 
 # Create your views here.
@@ -41,10 +43,21 @@ class OrderViewset(viewsets.ModelViewSet):
         try:
             with transaction.atomic():
                 for item in cart.items.all():
+                    if item.quantity > item.product.quantity:
+                        raise ValidationError(
+                            f"Insufficient stock for product {item.product}"
+                        )
                     OrderItem.objects.create(
                         order=order, product=item.product, quantity=item.quantity
                     )
+                    item.product.quantity -= item.quantity
+                    item.product.save()
                 cart.items.all().delete()
+        except ValidationError as e:
+            return Response(
+                {"error": "Order creation failed.", "details": e.detail},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         except Exception as e:
             return Response(
                 {"error": "Order creation failed.", "details": str(e)},
@@ -59,23 +72,8 @@ class OrderItemViewset(viewsets.ModelViewSet):
     serializer_class = OrderItemSerializer
     permission_classes = [IsAuthenticated]
     queryset = OrderItem.objects.all()
+    http_method_names = ["get", "post"]
 
     def get_queryset(self):
         items = OrderItem.objects.filter(order__user=self.request.user)
         return items
-
-    def perform_create(self, serializer):
-        cart, _ = Cart.objects.get_or_create(user=self.request.user)
-        product = serializer.validated_data["product"]
-        quantity = serializer.validated_data["quantity"]
-
-        # Check if item already exists in cart
-        cart_item = CartItem.objects.filter(cart=cart, product=product).first()
-
-        if cart_item:
-            # If exists, update the quantity
-            cart_item.quantity += quantity
-            cart_item.save()
-        else:
-            # Else, create a new one
-            serializer.save(cart=cart)

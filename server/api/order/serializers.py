@@ -33,3 +33,4 @@ class OrderSerializer(serializers.ModelSerializer):
         if not isinstance(obj,Order):
             return None
         return sum(item.quantity * item.product.price for item in obj.order_items.all())
+
