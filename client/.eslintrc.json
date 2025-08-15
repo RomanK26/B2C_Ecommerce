@@ -1,0 +1,74 @@
+// {
+//   "root": true,
+//   "env": {
+//     "browser": true,
+//     "es2021": true
+//   },
+//   "parser": "@typescript-eslint/parser",
+//   "parserOptions": {
+//     "ecmaVersion": "latest",
+//     "sourceType": "module"
+//   },
+//   "extends": [
+//     "eslint:recommended",
+//     "plugin:react/recommended",
+//     "plugin:@typescript-eslint/recommended",
+//     "plugin:boundaries/recommended"
+//   ],
+//   "plugins": ["react", "@typescript-eslint", "boundaries"],
+//   "settings": {
+//     "react": {
+//       "version": "detect"
+//     },
+//     "boundaries/elements": [
+//       { "type": "app", "pattern": "src/app" },
+//       { "type": "feature", "pattern": "src/features/*" },
+//       { "type": "component", "pattern": "src/components/*" },
+//       { "type": "hook", "pattern": "src/hooks/*" },
+//       { "type": "util", "pattern": "src/utils/*" },
+//       { "type": "type", "pattern": "src/types/*" },
+//       { "type": "style", "pattern": "src/styles/*" },
+//       { "type": "asset", "pattern": "src/assets/*" }
+//     ]
+//   },
+//   "rules": {
+//     // React & TS best practices
+//     "react/react-in-jsx-scope": "off", // Not needed in React 17+
+//     "react/prop-types": "off", // Using TypeScript
+//     "@typescript-eslint/no-unused-vars": ["error"],
+
+//     // Boundaries rules
+//     "boundaries/element-types": [
+//       2,
+//       {
+//         "default": "disallow",
+//         "rules": [
+//           {
+//             "from": ["feature"],
+//             "allow": ["component", "hook", "util", "type", "style", "asset"]
+//           },
+//           {
+//             "from": ["component"],
+//             "allow": ["hook", "util", "type", "style", "asset"]
+//           },
+//           {
+//             "from": ["hook"],
+//             "allow": ["util", "type"]
+//           },
+//           {
+//             "from": ["app"],
+//             "allow": [
+//               "feature",
+//               "component",
+//               "hook",
+//               "util",
+//               "type",
+//               "style",
+//               "asset"
+//             ]
+//           }
+//         ]
+//       }
+//     ]
+//   }
+// }
