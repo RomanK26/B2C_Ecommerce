@@ -43,11 +43,13 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 CORS_ALLOWED_ORIGINS = [
-    "https://example.com",
-    "https://sub.example.com",
-    "http://localhost:8080",
-    "http://127.0.0.1:9000",
+
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
 ]
+
+
+CORS_ALLOW_CREDENTIALS = True
 
 
 # Application definition
@@ -68,7 +70,8 @@ INSTALLED_APPS = [
     "api.account",
     "api.product",
     "api.order",
-    "api.cart"
+    "api.cart",
+    "api.rating",
 ]
 
 MIDDLEWARE = [
@@ -157,7 +160,7 @@ REST_FRAMEWORK = {
     # YOUR SETTINGS
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "api.account.utils.CookieJWTAuthentication",
     ],
 }
 
@@ -189,3 +192,19 @@ CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/0"
 
 
 AUTH_USER_MODEL = "account.Account"
+
+
+# settings.py
+
+# EMAIL BACKEND
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+# SMTP CONFIG
+EMAIL_HOST = "smtp.gmail.com"  # Or your SMTP provider
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "rkasichhwa1@gmail.com"
+EMAIL_HOST_PASSWORD = "ygyb kcbp mmqe laut"
+
+# DEFAULT SENDER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

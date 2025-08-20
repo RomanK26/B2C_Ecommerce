@@ -23,5 +23,6 @@ dependencies = [
     "pillow>=11.3.0",
     "psycopg[binary]>=3.2.9",
     "pytest-django>=4.11.1",
+    "redis>=6.2.0",
     "ruff>=0.12.3",
 ]

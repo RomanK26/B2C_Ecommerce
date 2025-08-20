@@ -27,6 +27,7 @@ class RegisterSerializer(ModelSerializer):
         }
 
     def create(self, validated_data):
+        print(validated_data)
         user = Account(**validated_data)
         user.set_password(validated_data["password"])
         user.save()

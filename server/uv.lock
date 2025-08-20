@@ -320,6 +320,7 @@ dependencies = [
     { name = "pillow" },
     { name = "psycopg", extra = ["binary"] },
     { name = "pytest-django" },
+    { name = "redis" },
     { name = "ruff" },
 ]
 
@@ -343,6 +344,7 @@ requires-dist = [
     { name = "pillow", specifier = ">=11.3.0" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.2.9" },
     { name = "pytest-django", specifier = ">=4.11.1" },
+    { name = "redis", specifier = ">=6.2.0" },
     { name = "ruff", specifier = ">=0.12.3" },
 ]
 
