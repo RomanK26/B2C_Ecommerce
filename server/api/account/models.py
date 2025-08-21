@@ -28,6 +28,7 @@ class AccountManager(BaseUserManager):
 
 # Create your views here.
 class Account(AbstractUser):
+    role_choices = [("admin", "ADMIN"), ("customer", "CUSTOMER")]
     username = None
     # name = models.CharField(max_length=100)
     email = models.EmailField(
@@ -43,6 +44,7 @@ class Account(AbstractUser):
     last_name = models.CharField(max_length=30, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    role = models.CharField(max_length=20, choices=role_choices, default="customer")
     objects = AccountManager()
 
     USERNAME_FIELD = "email"
@@ -50,3 +52,9 @@ class Account(AbstractUser):
 
     def __str__(self):
         return self.email
+    
+    
+    def save(self, *args, **kwargs):
+        if self.is_superuser:   
+            self.role = "admin"
+        super().save(*args, **kwargs)

@@ -58,6 +58,7 @@ class LoginView(APIView):
                 {
                     "message": "Login successful.",
                     "user_id": user.id,
+                    "role":user.role
                 },
                 status=status.HTTP_200_OK,
             )

@@ -40,14 +40,16 @@ class Product(models.Model):
         related_name="products",
         help_text="Select the product category",
     )
-    in_stock = models.BooleanField(default = False)
-    created_by = models.ForeignKey(Account,on_delete=models.CASCADE,related_name="product_creator")
+    in_stock = models.BooleanField(default=False)
+    created_by = models.ForeignKey(
+        Account, on_delete=models.CASCADE, related_name="product_creator"
+    )
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
 
     def __str__(self) -> str:
         return str(self.name)
-    
+
     def save(self, *args, **kwargs):
         self.in_stock = self.quantity > 0
         super().save(*args, **kwargs)
@@ -55,7 +57,6 @@ class Product(models.Model):
     class Meta:
         ordering = ("-created_at",)
         verbose_name_plural = "Products"
-        
 
 
 class ProductImage(models.Model):
