@@ -15,7 +15,7 @@ function App() {
           }}
         />
 
-        <div className="relative z-10">
+        <div className="relative z-10 h-full">
           <PageRoutes />
         </div>
       </div>

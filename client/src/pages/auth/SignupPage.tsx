@@ -5,22 +5,19 @@ import {
   signupSchema,
   type SignupFormInputs,
 } from "@/features/auth/schemas/authSchemas";
-import { useDispatch } from "react-redux";
+
 import AuthForm from "@/features/auth/components/AuthForm";
-import type { AppDispatch } from "@/app/store";
+
 import SignUpLogo from "@/assets/SigunUp.png";
 import { Link } from "react-router";
 
 import { LineSpinner } from "ldrs/react";
 import "ldrs/react/LineSpinner.css";
 import { useSignup } from "@/features/auth/hooks/useSignup";
-
-// Default values shown
+import { signupField } from "@/features/auth/constants/auth.constants";
 
 export default function SignupPage() {
-  console.log("signup page loaded");
-  const dispatch = useDispatch<AppDispatch>();
-  const { mutate, isPending, isError, error, isSuccess } = useSignup();
+  const { mutate, isPending } = useSignup();
 
   const {
     register,
@@ -48,7 +45,7 @@ export default function SignupPage() {
           Sign Up
         </h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <AuthForm errors={errors} register={register} />
+          <AuthForm errors={errors} register={register} fields={signupField} />
 
           {/* {isError && <p className="text-sm font-thin text-red-500">{error.data.message}</p>} */}
 

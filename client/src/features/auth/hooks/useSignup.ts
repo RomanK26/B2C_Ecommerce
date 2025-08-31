@@ -8,11 +8,11 @@ export const useSignup = () => {
 
   const mutation = useMutation({
     mutationFn: signup,
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: () => {
+    //   console.log(data);
 
-      toast.success("Successfully Registered user!", {});
-      navigate("/login");
+      // toast.success("Successfully Registered user!");
+      navigate("check-your-mail/");
     },
     onError: (error: any) => {
       console.log("Error e", error);
@@ -20,6 +20,7 @@ export const useSignup = () => {
 
       toast.error(message);
     },
+    retry:1
   });
   return mutation;
 };

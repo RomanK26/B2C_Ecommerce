@@ -9,10 +9,10 @@ type AuthFormProps = {
   register: UseFormRegister<FormData>;
 };
 
-const AuthForm: React.FC<AuthFormProps> = ({ errors, register }) => {
+const AuthForm: React.FC<AuthFormProps> = ({ errors, register ,fields}) => {
   return (
     <div>
-      {signupField.map((field) => (
+      {fields.map((field) => (
         <InputBox
           key={field.name}
           label={field.label}

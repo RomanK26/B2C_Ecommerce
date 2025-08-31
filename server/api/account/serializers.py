@@ -3,6 +3,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
 from api.account.models import Account
+from api.account.utils import User
 
 
 class RegisterSerializer(ModelSerializer):
@@ -29,6 +30,7 @@ class RegisterSerializer(ModelSerializer):
     def create(self, validated_data):
         print(validated_data)
         user = Account(**validated_data)
+        print(user)
         user.set_password(validated_data["password"])
         user.save()
         return user
@@ -49,13 +51,26 @@ class LoginSerializer(serializers.Serializer):
     def validate(self, data):
         email = data.get("email")
         password = data.get("password")
-        print("Login validation data:", data)
+        # print("Login validation data:", data)
 
         if not email or not password:
             raise serializers.ValidationError("Email and password are required.")
         user = authenticate(username=email, password=password)
-        print("Authenticated user:", user)
+        # print("Authenticated user:", user)
         if not user:
             raise serializers.ValidationError("Invalid credentials.")
         self.user = user
         return data
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "email", "role"]
+        
+        
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name']
+        read_only_fields = ['id', 'username']

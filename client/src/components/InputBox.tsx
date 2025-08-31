@@ -1,9 +1,9 @@
 import type { SignupFormInputs } from "@/features/auth/schemas/authSchemas";
 import React from "react";
-import type { UseFormRegister,  } from "react-hook-form";
+import type { UseFormRegister } from "react-hook-form";
 
 type InputFieldProps = {
-  name:keyof SignupFormInputs
+  name: keyof SignupFormInputs;
   label: string;
   error?: string;
   register?: UseFormRegister<SignupFormInputs>;
@@ -17,19 +17,21 @@ const InputBox: React.FC<InputFieldProps> = ({
   register,
   type,
   placeholder,
-  name
+  name,
 }) => {
   return (
     <div className="mb-4">
       {" "}
-      <label className="mb-1 block font-medium tracking-wide leading-6">{label}</label>
+      <label className="mb-1 block leading-6 font-medium tracking-wide">
+        {label}
+      </label>
       <input
         {...register!(name)}
         type={type}
         className="w-full border p-2"
         placeholder={placeholder}
       />
-      {error && <p className="mt-0.5 font-l text-red-500 leading-5">{error}</p>}
+      {error && <p className="font-l mt-0.5 leading-5 text-red-500">{error}</p>}
     </div>
   );
 };

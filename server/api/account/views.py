@@ -1,14 +1,19 @@
-from termios import VLNEXT
-from rest_framework.generics import CreateAPIView
+from time import clock_getres
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
-from api.account.serializers import LoginSerializer
+from api.account.serializers import (
+    LoginSerializer,
+    UserProfileSerializer,
+    UserSerializer,
+)
 from api.account.serializers import RegisterSerializer
 from api.account.tasks import send_verification_email
 from rest_framework.response import Response
 from rest_framework import status
 from api.account.services import RegisterService
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
 
 
 class RegisterView(CreateAPIView):
@@ -55,19 +60,15 @@ class LoginView(APIView):
             accessToken = str(refresh.access_token)
             refreshToken = str(refresh)
             response = Response(
-                {
-                    "message": "Login successful.",
-                    "user_id": user.id,
-                    "role":user.role
-                },
+                {"message": "Login successful.", "user_id": user.id, "role": user.role},
                 status=status.HTTP_200_OK,
             )
             response.set_cookie(
                 key="accessToken",
                 value=accessToken,
                 httponly=False,
-                # secure=True,        # only over HTTPS
-                samesite="None",
+                secure=False,  # only over HTTPS
+                samesite="Lax",
                 max_age=60 * 15,
             )
 
@@ -76,7 +77,7 @@ class LoginView(APIView):
                 value=refreshToken,
                 httponly=False,
                 secure=False,
-                samesite="None",
+                samesite="Lax",
                 max_age=60 * 60 * 24 * 7,  # 7 days
             )
             return response
@@ -110,7 +111,27 @@ class RefreshView(APIView):
 
 class LogoutView(APIView):
     def post(self, request):
+        print("logout trigger")
         response = Response({"message": "Logged out"}, status=200)
         response.delete_cookie("accessToken")
         response.delete_cookie("refreshToken")
         return response
+
+
+class MeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        print(request)
+        serializer = UserSerializer(request.user)
+        print(serializer.data)
+        return Response(serializer.data)
+
+
+class UserProfileView(RetrieveUpdateAPIView):
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        # Return the currently logged-in user
+        return self.request.user

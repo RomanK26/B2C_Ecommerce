@@ -1,48 +1,31 @@
-import type { authState } from "@/types/auth.types";
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import type { SignupFormInputs } from "@/features/auth/schemas/authSchemas";
-import { signup } from "@/features/auth/services/authService";
+import { createSlice } from "@reduxjs/toolkit";
 
-const initialState: authState = {
-  isAuthenticated:false,
-  user: null,
-  loading: false,
-  error: null,
+const initialState = {
+  user: null,     
+  token: null,     
+  isAuthenticated: false,
 };
 
-export const signupUser = createAsyncThunk(
-  "auth/signup",
-  async (formData: SignupFormInputs, { rejectWithValue }) => {
-    console.log('signup user')
-    try {
-      const response = await signup(formData);
-  
-      return response;
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || "Signup failed");
-    }
-  },
-);
-
-const signupSlice = createSlice({
+const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(signupUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(signupUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload;
-      })
-      .addCase(signupUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      });
+  reducers: {
+    setCredentials: (state, action) => {
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+      state.isAuthenticated = true;
+    },
+    logout: (state) => {
+      state.user = null;
+      state.token = null;
+      state.isAuthenticated = false;
+    },
+    setIsAuthenticated:(state,action)=>{
+        state.isAuthenticated=action.payload
+    }
   },
 });
 
-export default signupSlice.reducer;
+export const { setCredentials, logout,setIsAuthenticated } = authSlice.actions;
+export default authSlice.reducer;
+
