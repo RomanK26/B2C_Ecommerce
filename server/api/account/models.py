@@ -52,9 +52,8 @@ class Account(AbstractUser):
 
     def __str__(self):
         return self.email
-    
-    
+
     def save(self, *args, **kwargs):
-        if self.is_superuser:   
+        if self.is_superuser:
             self.role = "admin"
         super().save(*args, **kwargs)

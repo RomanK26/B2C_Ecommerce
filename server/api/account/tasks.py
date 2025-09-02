@@ -1,12 +1,11 @@
 from venv import logger
-from celery import shared_task
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from django.core.mail import send_mail
 
-
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
 import environ
+from celery import shared_task
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.core.mail import send_mail
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 
 env = environ.Env()
 

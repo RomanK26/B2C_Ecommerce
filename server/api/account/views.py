@@ -1,19 +1,18 @@
-from time import clock_getres
+from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from api.account.serializers import (
+    ChangePasswordSerializer,
     LoginSerializer,
+    RegisterSerializer,
     UserProfileSerializer,
     UserSerializer,
 )
-from api.account.serializers import RegisterSerializer
+from api.account.services import AuthService, RegisterService, UserService
 from api.account.tasks import send_verification_email
-from rest_framework.response import Response
-from rest_framework import status
-from api.account.services import RegisterService
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import IsAuthenticated
 
 
 class RegisterView(CreateAPIView):
@@ -34,7 +33,6 @@ class VerifyEmailView(APIView):
 
     def get(self, request, uid, token):
         success, message = RegisterService.verify_user(uid, token)
-        print(success, message)
         if success:
             return Response({"message": message}, status=status.HTTP_200_OK)
         else:
@@ -42,89 +40,33 @@ class VerifyEmailView(APIView):
 
 
 class LoginView(APIView):
-    """
-    A view for handling user login.
-    """
-
     permission_classes = [AllowAny]
     serializer_class = LoginSerializer
 
     def post(self, request):
-        print("Login request data:", request.data)
-
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.user
         if user is not None:
-            refresh = RefreshToken.for_user(user)
-            accessToken = str(refresh.access_token)
-            refreshToken = str(refresh)
-            response = Response(
-                {"message": "Login successful.", "user_id": user.id, "role": user.role},
-                status=status.HTTP_200_OK,
-            )
-            response.set_cookie(
-                key="accessToken",
-                value=accessToken,
-                httponly=False,
-                secure=False,  # only over HTTPS
-                samesite="Lax",
-                max_age=60 * 15,
-            )
-
-            response.set_cookie(
-                key="refreshToken",
-                value=refreshToken,
-                httponly=False,
-                secure=False,
-                samesite="Lax",
-                max_age=60 * 60 * 24 * 7,  # 7 days
-            )
-            return response
+            return AuthService.login_user(user)
 
 
 class RefreshView(APIView):
     def post(self, request):
         refresh_token = request.COOKIES.get("refreshToken")
-        if not refresh_token:
-            return Response(
-                {"error": "Refresh token missing"}, status=status.HTTP_400_BAD_REQUEST
-            )
-
-        try:
-            refresh = RefreshToken(refresh_token)
-            access_token = str(refresh.access_token)
-
-            response = Response({"access": access_token}, status=status.HTTP_200_OK)
-            response.set_cookie(
-                key="accessToken",
-                value=access_token,
-                httponly=False,
-                secure=False,
-                samesite="None",
-                max_age=60 * 15,
-            )
-            return response
-        except Exception:
-            return Response({"error": "Invalid refresh token"}, status=400)
+        return AuthService.refresh_token(refresh_token)
 
 
 class LogoutView(APIView):
     def post(self, request):
-        print("logout trigger")
-        response = Response({"message": "Logged out"}, status=200)
-        response.delete_cookie("accessToken")
-        response.delete_cookie("refreshToken")
-        return response
+        return AuthService.logout_user()
 
 
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        print(request)
         serializer = UserSerializer(request.user)
-        print(serializer.data)
         return Response(serializer.data)
 
 
@@ -133,5 +75,23 @@ class UserProfileView(RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        # Return the currently logged-in user
+        """
+        - return currently logged in user
+        """
         return self.request.user
+
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+    http_method_names = ["patch"]
+
+    def patch(self, request):
+        serializer = ChangePasswordSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            response_data = UserService.change_password(
+                user=request.user,
+                old_password=serializer.validated_data["old_password"],
+                new_password=serializer.validated_data["new_password"],
+            )
+            return response_data
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
