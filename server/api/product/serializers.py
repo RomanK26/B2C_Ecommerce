@@ -1,18 +1,53 @@
 from rest_framework import serializers
 
-from api.product.models import Category, Product
+from api.product.models import Product, ProductImage
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Category
-        fields = ['id','name','description',"created_at",'updated_at']
+        model = ProductImage
+        fields = ["id", "image"]
+
+
 class ProductSerializer(serializers.ModelSerializer):
+    images = ProductImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
-        fields = ["name", "description", "price", "quantity", "category","id","in_stock"]
-        read_only_fields = ["created_at", "updated_at", "in_stock",'id']
-        extra_kwargs = {
-            'category': {'required': True}  
-        }
+        fields = [
+            "name",
+            "description",
+            "price",
+            "quantity",
+            "category",
+            "id",
+            "in_stock",
+            "images",
+        ]
+        read_only_fields = ["created_at", "updated_at", "in_stock", "id"]
+        extra_kwargs = {"category": {"required": True}}
+
+
+class ProductCreateSerializer(serializers.ModelSerializer):
+    images = serializers.ListField(
+        child=serializers.ImageField(), write_only=True, required=False
+    )
+
+    class Meta:
+        model = Product
+        fields = [
+            "id",
+            "name",
+            "description",
+            "price",
+            "images",
+            "quantity",
+            "category",
+        ]
+
+    def create(self, validated_data):
+        images = validated_data.pop("images", [])
+        product = Product.objects.create(**validated_data)
+        for img in images:
+            ProductImage.objects.create(product=product, image=img)
+        return product

@@ -16,7 +16,7 @@ class CartItem(models.Model):
 
     cart = models.ForeignKey(Cart,related_name="items",on_delete=models.CASCADE)
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
-    quantity = models.PositiveSmallIntegerField(validators=[MinValueValidator(1)])
+    quantity = models.PositiveSmallIntegerField(default=1,validators=[MinValueValidator(1)])
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

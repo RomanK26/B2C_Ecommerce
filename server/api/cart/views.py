@@ -1,8 +1,10 @@
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from api.cart.models import Cart, CartItem
 from api.cart.serializers import CartItemSerializer, WriteCartItemSerializer
+from api.cart.services import CartService
 
 
 # Create your views here.
@@ -16,18 +18,21 @@ class CartItemViewSet(ModelViewSet):
             return WriteCartItemSerializer
 
     def get_queryset(self):
-        cart, _ = Cart.objects.get_or_create(user=self.request.user)
-        return CartItem.objects.filter(cart=cart)
+        return CartService.get_cart_items_for_user(self.request.user)
 
-    def perform_create(self, serializer):
-        cart, _ = Cart.objects.get_or_create(user=self.request.user)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
         product = serializer.validated_data["product"]
         quantity = serializer.validated_data["quantity"]
 
-        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
-        if not created:
-            cart_item.quantity += quantity
-        else:
-            cart_item.quantity = quantity
-        cart_item.save()
+        cart_item, message = CartService.add_or_update_cart_item(
+            user=request.user, product=product, quantity=quantity
+        )
+
+        read_serializer = CartItemSerializer(cart_item)
+        return Response(
+            {"message": message, "cart_item": read_serializer.data},
+            status=status.HTTP_201_CREATED,
+        )

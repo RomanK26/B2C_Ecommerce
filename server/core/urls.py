@@ -16,21 +16,36 @@ Including another URLconf
 """
 
 from debug_toolbar.toolbar import debug_toolbar_urls
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
-urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
-    path(
-        "api/schema/swagger-ui/",
-        SpectacularSwaggerView.as_view(url_name="schema"),
-        name="swagger-ui",
-    ),
-    path("api/auth/", include("api.account.urls")),
-    path("api/", include("api.product.urls")),
-    path("api/", include("api.order.urls")),
-    path("api/", include("api.cart.urls")),
-    # path(),
-] + debug_toolbar_urls()
+from api.account.views import ChangePasswordView, UserProfileView
+
+urlpatterns = (
+    [
+        path("admin/", admin.site.urls),
+        path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+        path(
+            "api/schema/swagger-ui/",
+            SpectacularSwaggerView.as_view(url_name="schema"),
+            name="swagger-ui",
+        ),
+        path("api/auth/", include("api.account.urls")),
+        path("api/profile/", UserProfileView.as_view(), name="profile"),
+        path(
+            "api/profile/change-password/",
+            ChangePasswordView.as_view(),
+            name="change-password",
+        ),
+        path("api/", include("api.order.urls")),
+        path("api/products/", include("api.product.urls")),
+        path("api/carts/", include("api.cart.urls")),
+        path("api/category/", include("api.category.urls")),
+        # path(),
+    ]
+    + debug_toolbar_urls()
+    + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+)
