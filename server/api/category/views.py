@@ -2,7 +2,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 
 from api.category.models import Category
 from api.category.serializers import CategorySerializer
-from api.product.permissions import IsAdminOrReadOnly
+from api.permissions import IsAdminOrReadOnly
 
 
 class CategoryView(ListCreateAPIView):

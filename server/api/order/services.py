@@ -38,7 +38,10 @@ class OrderService:
 
     @staticmethod
     def get_orders_for_user(user):
-        queryset = Order.objects.all()
+        queryset = Order.objects.select_related("user").prefetch_related(
+            "order_items__product__images",
+            "order_items__product__category",
+        )
         if user.role != "admin":
             queryset = queryset.filter(user=user)
         return queryset

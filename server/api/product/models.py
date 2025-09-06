@@ -22,7 +22,7 @@ class Product(models.Model):
     )
     category = models.ForeignKey(
         Category,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="products",
         help_text="Select the product category",
     )
@@ -41,7 +41,7 @@ class Product(models.Model):
         super().save(*args, **kwargs)
 
     class Meta:
-        ordering = ("-created_at",)
+        ordering = ("id",)
         verbose_name_plural = "Products"
 
 
@@ -93,3 +93,4 @@ class ProductReview(models.Model):
         ordering = ("-created_at",)
         unique_together = ("product", "user")
         verbose_name_plural = "Product Reviews"
+        # ordering = ("id")

@@ -2,13 +2,16 @@ from psycopg import DatabaseError
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from api.product.permissions import IsAdminOrReadOnly
-from api.product.serializers import ProductSerializer
+from api.permissions import IsAdminOrReadOnly
+from api.product.serializers import ProductCreateSerializer, ProductSerializer
 from api.product.services import ProductService
 
 
+from rest_framework.generics import ListCreateAPIView
+
+
 # Create your views here.
-class ProductListView(APIView):
+class ProductListView(ListCreateAPIView):
     """
     A viewset for viewing and editing product instances.
     """
@@ -36,7 +39,10 @@ class ProductListView(APIView):
             )
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        # print('Product object',request.body)
+        print(request.POST)      # Django’s parsed form data (only text fields)
+        print(request.FILES)
+        serializer = ProductCreateSerializer(data=request.data)
         if serializer.is_valid():
             product = ProductService.add_product(
                 user=request.user,
@@ -59,7 +65,7 @@ class ProductDetailView(APIView):
         if product is None:
             Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        return Response(ProductSerializer(product), status=status.HTTP_200_OK)
+        return Response(ProductSerializer(product).data, status=status.HTTP_200_OK)
 
     def delete(self, request, pk):
         product = ProductService.get_product_detail(pk)

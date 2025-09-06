@@ -5,11 +5,12 @@ from rest_framework.viewsets import ModelViewSet
 
 from api.cart.serializers import CartItemSerializer, WriteCartItemSerializer
 from api.cart.services import CartService
+from api.cart.permissions import IsCustomer
 
 
 # Create your views here.
 class CartItemViewSet(ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsCustomer]
 
     def get_serializer_class(self):
         if self.request.method == "GET":

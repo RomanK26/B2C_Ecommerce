@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from api.product.models import Product, ProductImage
+from api.category.models import Category
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -11,6 +12,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)
+    category = serializers.SlugRelatedField(read_only=True, slug_field="name")
 
     class Meta:
         model = Product
@@ -32,6 +34,11 @@ class ProductCreateSerializer(serializers.ModelSerializer):
     images = serializers.ListField(
         child=serializers.ImageField(), write_only=True, required=False
     )
+    # Accept category as integer from FormData
+    category = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all()
+    )
+    
 
     class Meta:
         model = Product

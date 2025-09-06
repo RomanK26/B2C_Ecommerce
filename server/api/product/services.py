@@ -8,28 +8,8 @@ from api.product.serializers import ProductSerializer
 class ProductService:
     @staticmethod
     def get_all_products():
-        try:
-            products = Product.objects.select_related("category").all()
-            return list(products)
-            if not products.exists():
-                return Response(
-                    {"message": "No products found."}, status=status.HTTP_204_NO_CONTENT
-                )
-            serializer = ProductSerializer(products, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except DatabaseError as e:
-            raise e
-            return Response(
-                {"error": "Database error occurred", "details": str(e)},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
-
-        except Exception as e:
-            raise e
-            return Response(
-                {"error": "An unexpected error occurred", "details": str(e)},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+        products = Product.objects.select_related("category").all()
+        return list(products)
 
     @staticmethod
     def add_product(user, validated_data, files):

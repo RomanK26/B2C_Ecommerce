@@ -20,6 +20,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(read_only=True, many=True, source='order_items')
     total_price = serializers.SerializerMethodField(read_only=True)
+    user = serializers.SlugRelatedField(read_only=True,slug_field="email")
 
     class Meta:
         model = Order

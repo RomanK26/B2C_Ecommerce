@@ -29,7 +29,7 @@ class AuthService:
             httponly=False,
             secure=False,
             samesite="Lax",
-            max_age=60 * 15,
+            max_age=60 * 60,
         )
 
         response.set_cookie(
