@@ -4,7 +4,7 @@ import PageRoutes from "@/app/PageRoutes";
 function App() {
   return (
     <>
-      <div className="relative min-h-screen w-full bg-[#fff9f5]">
+      <div className="relative min-h-screen w-full ">
         <div
           className="absolute inset-0 z-0"
           style={{

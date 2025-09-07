@@ -10,7 +10,7 @@ from api.cart.permissions import IsCustomer
 
 # Create your views here.
 class CartItemViewSet(ModelViewSet):
-    permission_classes = [IsAuthenticated,IsCustomer]
+    permission_classes = [IsAuthenticated, IsCustomer]
 
     def get_serializer_class(self):
         if self.request.method == "GET":
@@ -19,6 +19,7 @@ class CartItemViewSet(ModelViewSet):
             return WriteCartItemSerializer
 
     def get_queryset(self):
+        print("cart", self.request.user)
         return CartService.get_cart_items_for_user(self.request.user)
 
     def create(self, request, *args, **kwargs):

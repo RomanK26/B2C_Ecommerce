@@ -11,7 +11,7 @@ export default function MainSidebar() {
   return (
     <aside
       className={
-        "relative m-3 flex h-fit w-48 flex-col border-r bg-white shadow-sm"
+        "relative m-3 flex h-fit w-48 flex-col border-r bg-[#ffffff] shadow-sm"
       }
     >
       <div

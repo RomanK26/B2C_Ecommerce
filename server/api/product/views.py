@@ -22,7 +22,8 @@ class ProductListView(ListCreateAPIView):
 
     def get(self, request):
         try:
-            products = ProductService.get_all_products()
+            search_query = request.query_params.get("q", None)
+            products = ProductService.get_all_products(search_query=search_query)
             if not products:
                 return Response({"message": "No products found."}, status=204)
             serializer = self.serializer_class(products, many=True)
@@ -58,7 +59,7 @@ class ProductListView(ListCreateAPIView):
             else:
                 return Response(
                     {"detail": "Failed to create product."},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

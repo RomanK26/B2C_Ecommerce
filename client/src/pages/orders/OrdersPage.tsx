@@ -1,11 +1,13 @@
 import React from "react";
 import { useFetchAllOrders } from "@/features/orders/hooks/useFetchAllOrders";
-import { Loader2 } from "lucide-react";
+import { Loader2, StepBack } from "lucide-react";
 import OrderCard from "@/features/orders/components/OrderCard";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
 
 const OrdersPage = () => {
   const { data: orders, isPending } = useFetchAllOrders();
-  console.log(orders)
+  console.log(orders);
 
   if (isPending) {
     return (
@@ -24,8 +26,11 @@ const OrdersPage = () => {
   }
 
   return (
-    <div className="flex-1 contain-content  p-6">
-      <h1 className="mb-2 text-2xl text-center font-semibold">My Orders</h1>
+    <div className="flex-1 p-6 contain-content">
+      <Link to={"/admin/"}>
+        <Button>Go Home</Button>
+      </Link>
+      <h1 className="mb-2 text-center text-2xl font-semibold">My Orders</h1>
       <p className="mb-6 text-gray-500">Track and manage your order history</p>
 
       <div className="w-full space-y-6">

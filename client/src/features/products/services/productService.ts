@@ -5,6 +5,15 @@ export const fetchProducts = async () => {
   return products;
 };
 
+export const searchProducts = async (query) => {
+  const products = await api.get("/api/products/", {
+    params: {
+      q: query,
+    },
+  });
+  return products;
+};
+
 export const fetchProductDetail = async (id: number) => {
   const productDetail = await api.get(`/api/products/${id}/`);
   return productDetail;
@@ -24,9 +33,9 @@ export const editProduct = async ({ id, data }) => {
 
 export const addProduct = async ({ formData }: { formData: FormData }) => {
   // const payload = { ...formData, category: Number(formData.category) };
- for (let [key, value] of formData.entries()) {
-  console.log(key, value);
-}
+  for (let [key, value] of formData.entries()) {
+    console.log(key, value);
+  }
   return api.post("/api/products/", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
