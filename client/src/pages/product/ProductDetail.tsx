@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import QuantityStepper from "@/components/QuantityStepper";
-import { ShoppingCartIcon } from "lucide-react";
+import { AlignLeft, ArrowLeft, MoveLeft, ShoppingCartIcon } from "lucide-react";
 import ProductImageGallery from "@/features/products/components/ProductGallery";
 import { useAddToCart } from "@/features/cart/hooks/useAddToCart";
 import { useSelector } from "react-redux";
 import { useProductDetail } from "@/features/products/hooks/useFetchProductDetail";
+import { Button } from "@/components/ui/button";
 
 const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
@@ -44,9 +45,16 @@ const ProductDetail = () => {
       </div>
     );
   }
+  const handleBack = () => {
+    navigate(-1);
+  };
 
   return (
-    <div className="mx-auto max-w-5xl p-4">
+    <div className="w-full p-4">
+      <Button className="m-1 flex" onClick={handleBack}>
+        <ArrowLeft className="size-6"></ArrowLeft>
+        <p>Go Back</p>
+      </Button>
       {/* Product Header */}
       <div className="flex flex-col gap-6 rounded-xl bg-white p-6 shadow-md md:flex-row">
         {/* Image section */}
@@ -68,18 +76,19 @@ const ProductDetail = () => {
             </div>
           </div>
 
-          <div className="flex items-end justify-between">
+          <div className="flex items-end justify-between gap-8">
             <div className="text-center">
               <p className="font-semibold">Qty.</p>
               <QuantityStepper quantity={quantity} setQuantity={setQuantity} />
             </div>
+
             <button
               onClick={handleAddcart}
               disabled={isPending}
-              className="mt-6 flex flex-col items-center justify-center rounded-lg bg-amber-500 px-4 py-2 text-black transition hover:cursor-pointer hover:bg-amber-600"
+              className="relative mt-6 flex w-full flex-col items-center justify-center rounded-lg bg-amber-500 px-4 py-2 text-black transition hover:cursor-pointer hover:bg-amber-600"
             >
               <ShoppingCartIcon></ShoppingCartIcon>
-              <p>Add to Cart</p>
+              <p className="text-gray-600">Add to Cart</p>
             </button>
           </div>
         </div>

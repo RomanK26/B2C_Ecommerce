@@ -20,13 +20,12 @@ const AdminLayout = () => {
 
   const { isLoading } = useAuthCheck();
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="flex justify-center items-center">Loading...</div>;
   }
 
-  const handleSettings=()=>{
-    navigate("/admin/user-profile/")
-
-  }
+  const handleSettings = () => {
+    navigate("/admin/user-profile/");
+  };
 
   const handleLogout = async () => {
     console.log("logout clicked");
@@ -89,7 +88,7 @@ const AdminLayout = () => {
           </div>
 
           {/* User Menu */}
-          <UserMenu onLogout={handleLogout} handleSettings={handleSettings}/>
+          <UserMenu onLogout={handleLogout} handleSettings={handleSettings} />
         </header>
 
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">

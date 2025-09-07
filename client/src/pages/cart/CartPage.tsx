@@ -3,11 +3,10 @@ import CartDetail from "@/features/cart/components/CartDetail";
 import { useFetchAllCartItems } from "@/features/cart/hooks/useFetchAllCartItems";
 
 import { UseAddOrder } from "@/features/orders/hooks/useAddOrder";
-import { ShoppingCart } from "lucide-react";
+import { Divide, ShoppingCart } from "lucide-react";
 
 const CartPage = () => {
   const { data, isLoading } = useFetchAllCartItems();
-  console.log("data", data);
 
   const { mutate } = UseAddOrder();
 
@@ -21,14 +20,16 @@ const CartPage = () => {
     mutate({ items: data.data });
   };
   return (
-    <div className="flex w-full max-w-3xl flex-col justify-center bg-yellow-100 p-6">
-      <h2 className="mb-6 text-2xl font-bold">
-        <span>
-          <ShoppingCart></ShoppingCart> My Cart
-        </span>
-      </h2>
+    <div className="mx-auto flex w-full flex-col items-start bg-white">
+      <div className="mb-6 flex w-full items-center justify-center gap-2 text-2xl leading-14 font-bold">
+        <ShoppingCart></ShoppingCart> <p>My Cart</p>
+      </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex w-full flex-1 flex-col gap-4 px-4">
+        {data?.data?.length < 1 && (
+          <p className="text-center text-gray-500">No items found.</p>
+        )}
+
         {data?.data?.map((item, index) => (
           <div
             key={index}
@@ -40,7 +41,7 @@ const CartPage = () => {
       </div>
 
       {/* Cart Footer */}
-      <div className="mt-8 flex items-center justify-between border-t pt-4">
+      <div className="mt-8 mb-6 flex items-center justify-between space-x-4 self-end border-t pt-4 pr-6 pl-4">
         <h3 className="text-lg font-semibold tracking-wider">
           Total: $
           {data?.data

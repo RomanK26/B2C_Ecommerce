@@ -24,11 +24,11 @@ const OrdersPage = () => {
   }
 
   return (
-    <div className="mx-auto max-w-4xl p-6">
-      <h1 className="mb-2 text-2xl font-semibold">My Orders</h1>
+    <div className="flex-1 contain-content  p-6">
+      <h1 className="mb-2 text-2xl text-center font-semibold">My Orders</h1>
       <p className="mb-6 text-gray-500">Track and manage your order history</p>
 
-      <div className="w-lg space-y-6">
+      <div className="w-full space-y-6">
         {orders?.data.map((order) => (
           <OrderCard key={order.id} order={order} />
         ))}

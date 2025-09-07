@@ -5,5 +5,6 @@ export const useFetchAllCartItems = () => {
   return useQuery({
     queryKey: ["cart_items"],
     queryFn: fetchAllCartItems,
+    retry: 1,
   });
 };

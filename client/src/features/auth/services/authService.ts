@@ -29,3 +29,7 @@ export const login = async (data: LoginFormInputs) => {
 export const logout = async () => {
   await api.post("/api/auth/logout/", { withCredentials: true });
 };
+
+export const authMe = async () => {
+  return api.get("api/auth/me");
+};

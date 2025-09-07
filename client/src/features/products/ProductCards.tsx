@@ -13,18 +13,22 @@ function ProductCards({ product }) {
 
   return (
     <Card
-      className="cursor-pointer rounded-2xl bg-white shadow-md transition-all duration-300 hover:shadow-lg"
+      className="group/zoom group/detail cursor-pointer bg-white pt-2 shadow-md transition-all duration-300 hover:shadow-lg"
       onClick={handleDetail}
     >
       {/* Image */}
-      <CardHeader className="px-2">
-        <div className="relative aspect-[5/4] w-full overflow-hidden rounded-t-2xl md:aspect-[4/3]">
+      <CardHeader className="mt-0 px-2">
+        <div className="relative aspect-[5/4] w-full overflow-hidden transition-transform duration-200 group-hover/zoom:scale-102 md:aspect-[4/3]">
           <img
             src={`${import.meta.env.VITE_API_URL}${product.images?.[0]?.image}`}
             alt={product.name}
             className="h-full w-full object-cover"
             loading="lazy"
           />
+
+          <Button className="absolute top-1/2 left-1/2 hidden -translate-x-1/2 -translate-y-1/2 bg-transparent group-hover/detail:block hover:cursor-pointer hover:bg-gray-800 hover:text-white">
+            Click for details
+          </Button>
         </div>
       </CardHeader>
 

@@ -135,7 +135,12 @@ const EditProfile = () => {
             </div>
 
             <div className="flex justify-between">
-              <Button variant={"secondary"} className="hover:cursor-pointer" type="button" onClick={()=>navigate("/admin/user-profile/change-password/")}>
+              <Button
+                variant={"secondary"}
+                className="hover:cursor-pointer"
+                type="button"
+                onClick={() => navigate("/admin/user-profile/change-password/")}
+              >
                 Change password
               </Button>
               <Button type="submit" className="hover:cursor-pointer">

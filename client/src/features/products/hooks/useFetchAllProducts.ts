@@ -5,6 +5,7 @@ const useFetchAllProducts = () => {
   return useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
+    retry: 1,
   });
 };
 

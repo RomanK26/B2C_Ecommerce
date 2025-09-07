@@ -8,14 +8,14 @@ import { setIsAuthenticated } from "../authSlice";
 export const useLogin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const {isAuthenticated}=useSelector(state=>state.auth)
+  const { isAuthenticated } = useSelector((state) => state.auth);
   return useMutation({
     mutationFn: login,
     onSuccess: (data) => {
       toast.success("Login Successfull", {
         duration: 2000,
       });
-      console.log('isAuthenticated status in login',isAuthenticated)
+      console.log("isAuthenticated status in login", isAuthenticated);
       // dispatch(setIsAuthenticated(true));
       console.log("data inside success");
       if (data.role === "customer") {
