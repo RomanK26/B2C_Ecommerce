@@ -5,19 +5,15 @@ import { Outlet } from "react-router";
 import MainSidebar from "@/components/MainSidebar";
 
 const AppLayout = () => {
-  // const isAuthenticated = useSelector();
-  // if (!isAuthenticated) {
-  //   return <Navigate to="/login" replace />;
-  // }
   return (
-    <div className="min-h-screen flex flex-col h-screen">
+    <div className="flex h-screen min-h-screen flex-col">
       <Header></Header>
-      <div className="flex flex-1 overflow-auto ">
+      <div className="flex flex-1">
         <MainSidebar />
         <Outlet></Outlet>
       </div>
 
-      <Footer></Footer>
+      {/* <Footer></Footer> */}
     </div>
   );
 };

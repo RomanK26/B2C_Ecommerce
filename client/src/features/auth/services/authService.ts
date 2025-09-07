@@ -3,6 +3,7 @@ import {
   type SignupFormInputs,
 } from "@/features/auth/schemas/authSchemas";
 import { api } from "@/services/api.config";
+import { useSelector } from "react-redux";
 
 export const signup = async (data: SignupFormInputs) => {
   const res = await api.post(`/api/auth/signup/`, data);
@@ -23,4 +24,8 @@ export const login = async (data: LoginFormInputs) => {
     withCredentials: true,
   });
   return res.data;
+};
+
+export const logout = async () => {
+  await api.post("/api/auth/logout/", { withCredentials: true });
 };

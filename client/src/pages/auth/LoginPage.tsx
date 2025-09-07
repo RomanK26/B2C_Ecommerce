@@ -12,7 +12,8 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 
 const LoginPage = () => {
-  const { mutate, isPending } = useLogin();
+  const {data, mutate, isPending } = useLogin();
+  console.log(data)
 
   const {
     register,

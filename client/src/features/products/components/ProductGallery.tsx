@@ -1,45 +1,71 @@
-import { CircleChevronLeft, CircleChevronRight, MoveRight, MoveRightIcon } from "lucide-react";
 import React, { useState } from "react";
+import { CircleChevronLeft, CircleChevronRight } from "lucide-react";
 
-const ProductImageGallery = ({ images }: { images: string[] }) => {
-  const [mainImage, setMainImage] = useState(images[0]);
+type ProductImage = {
+  id: number;
+  image: string;
+};
 
-  const handleNextImage = (e)=>{
-    setMainImage(images[1])
-  }
+interface ProductImageGalleryProps {
+  images: ProductImage[];
+}
+
+const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const mainImage = images[currentIndex];
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
 
   return (
     <div className="mx-auto max-w-md">
       {/* Main Image */}
       <div className="group relative mb-4 h-80 w-full overflow-hidden rounded-lg border">
         <img
-          //   src={mainImage}
-          src={images[0]}
+          src={`${import.meta.env.VITE_API_URL}${mainImage.image}`}
           alt="Product"
-          className="repeat-0 h-full w-full object-contain"
+          className="h-full w-full object-cover"
         />
-        <div className="absolute top-1/2 right-1/20 hidden transition-all duration-800 ease-in-out group-hover:block">
-          <CircleChevronRight></CircleChevronRight>
-        </div>
-        <div className="absolute top-1/2 left-1/20 hidden transition-all duration-800 ease-in-out group-hover:block">
-          <CircleChevronLeft onClick={handleNextImage}></CircleChevronLeft>
-        </div>
+
+        {/* Controls */}
+        {images.length > 1 && (
+          <>
+            <button
+              onClick={handlePrev}
+              className="absolute left-2 top-1/2 -translate-y-1/2 hidden rounded-full bg-white/70 p-1 shadow group-hover:block"
+            >
+              <CircleChevronLeft className="h-6 w-6 text-gray-700" />
+            </button>
+            <button
+              onClick={handleNext}
+              className="absolute right-2 top-1/2 -translate-y-1/2 hidden rounded-full bg-white/70 p-1 shadow group-hover:block"
+            >
+              <CircleChevronRight className="h-6 w-6 text-gray-700" />
+            </button>
+          </>
+        )}
       </div>
 
       {/* Thumbnails */}
       <div className="flex justify-center gap-3">
         {images.map((img, idx) => (
           <div
-            key={idx}
+            key={img.id}
+            onClick={() => setCurrentIndex(idx)}
             className={`h-20 w-20 cursor-pointer overflow-hidden rounded-lg border ${
-              mainImage === img ? "ring-2 ring-amber-500" : ""
+              currentIndex === idx ? "ring-2 ring-amber-500" : ""
             }`}
-            onClick={() => setMainImage(img)}
           >
             <img
-              src={img}
-              alt={`Thumb ${idx}`}
-              className="repeat-0 h-full w-full object-contain"
+              src={`${import.meta.env.VITE_API_URL}${img.image}`}
+              alt={`Thumbnail ${idx}`}
+              className="h-full w-full object-cover"
             />
           </div>
         ))}

@@ -8,10 +8,25 @@ import NotFound from "@/pages/NotFound";
 import About from "@/components/About";
 import CheckYourMail from "@/pages/auth/CheckYourMail";
 import VerifyMail from "@/pages/auth/VerifyMail";
-import ProductDetail from "@/pages/ProductDetail";
-import CartPage from "@/pages/CartPage";
-import OrdersPage from "@/pages/OrdersPage";
-import CategoriesPage from "@/pages/CategoriesPage";
+import ProductDetail from "@/pages/product/ProductDetail";
+import CartPage from "@/pages/cart/CartPage";
+import OrdersPage from "@/pages/orders/OrdersPage";
+
+import Dashboard from "@/pages/admin/Dashboard";
+import AdminLayout from "./AdminLayout";
+import AddProduct from "@/pages/product/AddProduct";
+
+import EditProduct from "@/pages/product/EditProduct";
+import AdminCategory from "@/pages/category/AdminCategory";
+import CategoriesPage from "@/pages/category/CategoriesPage";
+
+import EditCategory from "@/pages/category/EditCategory";
+import Products from "@/pages/product/Products";
+import AddCategory from "@/pages/category/AddCategory";
+import AdminOrdersPage from "@/pages/orders/AdminOrdersPage";
+import Customers from "@/pages/Customers";
+import EditProfile from "@/pages/user/EditProfile";
+import ChangePassword from "@/pages/user/ChangePassword";
 
 const PageRoutes = () => {
   return (
@@ -31,6 +46,21 @@ const PageRoutes = () => {
           <Route path="/carts/" element={<CartPage />} />
           <Route path="/orders/" element={<OrdersPage />} />
           <Route path="about/" element={<About />} />
+        </Route>
+        <Route path="/admin/" element={<AdminLayout />}>
+          <Route index element={<Dashboard />}></Route>
+          <Route path="products/" element={<Products />}></Route>
+          <Route path="products/add/" element={<AddProduct />}></Route>
+          <Route path="products/:id/" element={<EditProduct />}></Route>
+          <Route path="category/" element={<AdminCategory />}></Route>
+          <Route path="category/edit/:id/" element={<EditCategory />}></Route>
+          <Route path="category/add/" element={<AddCategory />}></Route>
+          <Route path="orders/" element={<AdminOrdersPage />}></Route>
+          <Route path="customers/" element={<Customers />}></Route>
+          <Route path="user-profile/">
+            <Route index element={<EditProfile />}></Route>
+            <Route path="change-password/" element={<ChangePassword />}></Route>
+          </Route>
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
