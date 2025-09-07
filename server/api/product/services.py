@@ -13,8 +13,9 @@ class ProductService:
 
     @staticmethod
     def add_product(user, validated_data, files):
+        print("in sservice layer",files)
         product = Product.objects.create(**validated_data, created_by=user)
-        for img in files.getlist("images"):
+        for img in files.getlist("image"):
             ProductImage.objects.create(product=product, image=img)
         return product
 

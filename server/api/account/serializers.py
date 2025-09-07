@@ -72,7 +72,15 @@ class UserSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "username", "email", "first_name", "last_name","profile_image","address"]
+        fields = [
+            "id",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "profile_image",
+            "address",
+        ]
         read_only_fields = ["id", "username"]
 
 
@@ -80,6 +88,18 @@ class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
 
+    def validate_old_password(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("Old password is incorrect")
+        return value
+
     def validate_new_password(self, value):
-        password_validation.validate_password(value)
+        user = self.context['request'].user
+        if not user:
+            raise serializers.ValidationError("User must be authenticated")
+        try:
+            password_validation.validate_password(value, user)
+        except serializers.ValidationError as e:
+            raise serializers.ValidationError(e.messages)
         return value

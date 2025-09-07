@@ -97,10 +97,6 @@ class RegisterService:
 class UserService:
     @staticmethod
     def change_password(user, old_password, new_password):
-        if not user.check_password(old_password):
-            raise ValidationErr({"old_password": "Wrong password"})
         user.set_password(new_password)
         user.save()
-        return Response(
-            {"detail": "Password updated successfully"}, status=status.HTTP_200_OK
-        )
+        return {"message": "Password updated successfully"}

@@ -40,18 +40,26 @@ class ProductListView(ListCreateAPIView):
 
     def post(self, request):
         # print('Product object',request.body)
-        print(request.POST)      # Django’s parsed form data (only text fields)
+        print(request.POST)  # Django’s parsed form data (only text fields)
         print(request.FILES)
-        serializer = ProductCreateSerializer(data=request.data)
+        serializer = ProductCreateSerializer(
+            data=request.data, context={"request": request}
+        )
         if serializer.is_valid():
             product = ProductService.add_product(
                 user=request.user,
                 validated_data=serializer.validated_data,
                 files=request.FILES,
             )
-            return Response(
-                self.serializer_class(product).data, status=status.HTTP_201_CREATED
-            )
+            if product:
+                return Response(
+                    self.serializer_class(product).data, status=status.HTTP_201_CREATED
+                )
+            else:
+                return Response(
+                    {"detail": "Failed to create product."},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

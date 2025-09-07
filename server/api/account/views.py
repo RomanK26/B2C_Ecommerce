@@ -86,12 +86,14 @@ class ChangePasswordView(APIView):
     http_method_names = ["patch"]
 
     def patch(self, request):
-        serializer = ChangePasswordSerializer(data=request.data)
+        serializer = ChangePasswordSerializer(
+            data=request.data, context={"request": request}
+        )
+
         if serializer.is_valid(raise_exception=True):
             response_data = UserService.change_password(
                 user=request.user,
                 old_password=serializer.validated_data["old_password"],
                 new_password=serializer.validated_data["new_password"],
             )
-            return response_data
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": response_data})
