@@ -1,4 +1,4 @@
-import { useFetchAllOrders } from "@/features/orders/hooks/useFetchAllOrders";
+import { useFetchAllOrders } from "@/features/orders/hooks/useFetchAllorders";
 import React from "react";
 import {
   Table,

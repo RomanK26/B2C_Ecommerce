@@ -12,7 +12,8 @@ export const useSignup = () => {
     //   console.log(data);
 
       // toast.success("Successfully Registered user!");
-      navigate("check-your-mail/");
+      // navigate("check-your-mail/");
+      navigate("/login/")
     },
     onError: (error: any) => {
       console.log("Error e", error);

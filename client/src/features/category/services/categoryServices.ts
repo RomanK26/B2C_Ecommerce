@@ -13,7 +13,7 @@ export const fetchCategoryDetail = async (id) => {
   return await api.get(`/api/category/${id}/`);
 };
 
-export const deleteCategory= async (id) => {
+export const deleteCategory = async (id) => {
   return await api.delete(`/api/category/${id}/`);
 };
 

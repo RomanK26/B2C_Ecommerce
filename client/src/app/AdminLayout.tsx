@@ -7,20 +7,28 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import AdminSidebar from "@/features/admin/components/AdminSidebar";
 import { menuItems } from "@/features/admin/constants";
 import UserMenu from "@/features/admin/UserMenu";
-import { setIsAuthenticated } from "@/features/auth/authSlice";
+import { logoutSuccess, setIsAuthenticated } from "@/features/auth/authSlice";
 import { useQueryClient } from "@tanstack/react-query";
 import { logout } from "@/features/auth/services/authService";
 import { useAuthCheck } from "@/hooks/useAuthCheck";
+import toast from "react-hot-toast";
 
 const AdminLayout = () => {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log("admin layout");
 
   const { isLoading } = useAuthCheck();
+  const { isAuthenticated, role } = useSelector((state) => state.auth);
+
+  if (role !== "admin") {
+    toast.error("you don't have permission");
+
+    return <Navigate to="/" replace />;
+  }
+
   if (isLoading) {
-    return <div className="flex justify-center items-center">Loading...</div>;
+    return <div className="flex items-center justify-center">Loading...</div>;
   }
 
   const handleSettings = () => {
@@ -28,74 +36,77 @@ const AdminLayout = () => {
   };
 
   const handleLogout = async () => {
-    console.log("logout clicked");
     await logout();
     dispatch(setIsAuthenticated(false));
+    dispatch(logoutSuccess());
     queryClient.clear();
     navigate("/login/", { replace: true });
   };
 
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      {/* Desktop Sidebar */}
-      <aside className="bg-muted/40 hidden border-r md:block">
-        <div className="flex h-full flex-col">
-          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-            <Link
-              to="/dashboard/home"
-              className="flex items-center gap-2 font-semibold"
-            >
-              <Package2 className="h-6 w-6" />
-              <span>Ecom</span>
-            </Link>
-            <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
-              <Bell className="h-4 w-4" />
-            </Button>
-          </div>
-          <div className="flex-1 overflow-y-auto">
-            <AdminSidebar menuItems={menuItems} />
-          </div>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <div className="flex flex-col">
-        <header className="bg-muted/40 flex h-14 items-center gap-4 border-b px-4 lg:h-[60px] lg:px-6">
-          {/* Mobile Sidebar */}
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="md:hidden">
-                <Menu className="h-5 w-5" />
+    <>
+      <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+        {/* Desktop Sidebar */}
+        <aside className="bg-muted/40 hidden border-r md:block">
+          <div className="flex h-full flex-col">
+            <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+              <Link
+                to="/dashboard/home"
+                className="flex items-center gap-2 font-semibold"
+              >
+                <Package2 className="h-6 w-6" />
+                <span>Ecom</span>
+              </Link>
+              <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
+                <Bell className="h-4 w-4" />
               </Button>
-            </SheetTrigger>
-            <SheetContent side="left">
+            </div>
+            <div className="flex-1 overflow-y-auto">
               <AdminSidebar menuItems={menuItems} />
-            </SheetContent>
-          </Sheet>
-
-          {/* Search */}
-          <div className="w-full flex-1">
-            <form>
-              <div className="relative">
-                <Search className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
-                <Input
-                  type="search"
-                  placeholder="Search products..."
-                  className="bg-background w-full pl-8 md:w-2/3 lg:w-1/3"
-                />
-              </div>
-            </form>
+            </div>
           </div>
+        </aside>
 
-          {/* User Menu */}
-          <UserMenu onLogout={handleLogout} handleSettings={handleSettings} />
-        </header>
+        {/* Main Content */}
+        <div className="flex flex-col">
+          <header className="bg-muted/40 flex h-14 items-center gap-4 border-b px-4 lg:h-[60px] lg:px-6">
+            {/* Mobile Sidebar */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="icon" className="md:hidden">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left">
+                <AdminSidebar menuItems={menuItems} />
+              </SheetContent>
+            </Sheet>
 
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <Outlet />
-        </main>
+            {/* Search */}
+            <div className="w-full flex-1">
+              <form>
+                <div className="relative">
+                  <Search className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
+                  <Input
+                    type="search"
+                    placeholder="Search products..."
+                    className="bg-background w-full pl-8 md:w-2/3 lg:w-1/3"
+                  />
+                </div>
+              </form>
+            </div>
+
+            {/* User Menu */}
+            <UserMenu onLogout={handleLogout} handleSettings={handleSettings} />
+          </header>
+
+          <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+            <Outlet />
+          </main>
+        </div>
       </div>
-    </div>
+      )
+    </>
   );
 };
 

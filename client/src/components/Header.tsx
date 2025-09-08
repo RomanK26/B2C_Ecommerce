@@ -1,17 +1,16 @@
-"use client";
-
 import { useContext, useState } from "react";
 import Logo from "/logo.png";
 import { LucideShoppingCart, Search, User } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { logout, setIsAuthenticated } from "@/features/auth/authSlice";
+import { setIsAuthenticated } from "@/features/auth/authSlice";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "./ui/button";
 import { SearchContext } from "@/app/AppLayout";
+import { logout } from "@/features/auth/services/authService";
 
 const Header = () => {
-  const { query, setQuery,setSearchParams } = useContext(SearchContext);
+  const { query, setQuery, setSearchParams } = useContext(SearchContext);
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
@@ -20,13 +19,14 @@ const Header = () => {
 
   const handleLogout = async () => {
     await logout();
+    console.log("logout");
     dispatch(setIsAuthenticated(false));
     queryClient.removeQueries();
     navigate("/", { replace: true });
   };
 
   const handleQuery = () => {
-  setSearchParams({q:query})
+    setSearchParams({ q: query });
   };
 
   return (

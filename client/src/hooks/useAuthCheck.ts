@@ -1,4 +1,4 @@
-import { setIsAuthenticated } from "@/features/auth/authSlice";
+import { setIsAuthenticated, setUserRole } from "@/features/auth/authSlice";
 import { api } from "@/services/api.config";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,7 +14,8 @@ export const useAuthCheck = () => {
       console.log("inside verifyAuth");
       try {
         const res = await api.get("/api/auth/me/");
-        dispatch(setIsAuthenticated(true));
+        await dispatch(setUserRole(res.data.role));
+        await dispatch(setIsAuthenticated(true));
       } catch (err) {
         dispatch(setIsAuthenticated(false));
         navigate("/login/", { replace: true });
